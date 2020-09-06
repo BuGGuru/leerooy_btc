@@ -276,7 +276,7 @@ async def price_index_calc():
                 logger.debug(("Price Index:", price_index))
 
         except Exception as error:
-            logger.info(("Error: Index could not be build:", error))
+            logger.info("Error: Index could not be build:")
             logger.debug(error)
 
         # Check performance
@@ -503,7 +503,7 @@ async def position_tracker():
         try:
             if price_index:
                 for user in user_list:
-                    if user.is_enabled:
+                    if user.is_enabled and user.client:
                         open_position = user.client.Positions.Positions_myPosition().result()[0]["result"][0]
                         if open_position["size"] == 0 and open_position["size"] != user.last_position_size:
                             user.last_position_size = 0
@@ -541,7 +541,7 @@ async def position_tracker():
 
         except Exception as error:
             logger.info("Position tracker failed!")
-            logger.info(error)
+            logger.debug(error)
             await asyncio.sleep(60)
 
 #########
