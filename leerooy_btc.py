@@ -276,7 +276,7 @@ async def price_index_calc():
                 logger.debug(("Price Index:", price_index))
 
         except Exception as error:
-            logger.info("Error: Index could not be build:")
+            logger.info("Error: Index could not be build!")
             logger.debug(error)
 
         # Check performance
@@ -509,8 +509,9 @@ async def position_tracker():
                             user.last_position_size = 0
                             # Update database
                             sqlquery = "UPDATE users SET last_position_size = '{}' " \
-                                       "WHERE telegram_id = '{}'".format(user.last_position_size,
-                                                                         user.telegram_id)
+                                       "WHERE telegram_id = '{}'".format(user.last_position_size, user.telegram_id)
+                            cursor.execute(sqlquery)
+                            db.commit()
 
                             message = "Position closed! Daily PNL: {}".format(round(open_position["realised_pnl"], 4))
                             await send_message(user.telegram_id, message)
@@ -534,8 +535,9 @@ async def position_tracker():
 
                             # Update database
                             sqlquery = "UPDATE users SET last_position_size = '{}' " \
-                                       "WHERE telegram_id = '{}'".format(user.last_position_size,
-                                                                         user.telegram_id)
+                                       "WHERE telegram_id = '{}'".format(user.last_position_size, user.telegram_id)
+                            cursor.execute(sqlquery)
+                            db.commit()
 
             await asyncio.sleep(60)
 
