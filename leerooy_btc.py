@@ -418,7 +418,7 @@ async def announcer():
     while True:
         if price_index:
             for user in user_list:
-                if user.is_enabled and user.client:
+                if user.is_enabled:
                     # Get new price level for the user
                     new_price_level = int(price_index / user.price_steps)
                     # Do nothing if no new price level
@@ -445,10 +445,12 @@ async def announcer():
                                 logger.debug(("Price Index: ", price_index))
                                 logger.debug(("Announced_price : ", user.announced_price))
 
-                                # Send message to the user
-                                position_message = await get_position(user.client)
-                                if position_message and not position_message == "No open position!":
-                                    message = message + "\n" + position_message
+                                # Construct message to the user
+                                if user.client:
+                                    position_message = await get_position(user.client)
+                                    if position_message and not position_message == "No open position!":
+                                        message = message + "\n" + position_message
+
                                 await send_message(user.telegram_id, message)
 
                                 # Update user
