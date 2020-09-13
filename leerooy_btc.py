@@ -98,6 +98,22 @@ for user in records:
 
     user_list.append(user_object)
 
+############
+# Database #
+############
+def execute_query(sqlquery):
+    try:
+        db = mysql.connector.connect(host=dbhost,
+                                     database=database,
+                                     user=dbuser,
+                                     password=dbpass)
+
+        cursor = db.cursor(dictionary=True, buffered=True)
+        cursor.execute(sqlquery)
+        db.commit()
+        db.close()
+    except mysql.connector.Error as error:
+        logger.info("DB Error: {}".format(error))
 
 ############
 # Telegram #
@@ -346,8 +362,7 @@ async def chat_monitor():
                                                 sqlquery = "UPDATE users SET price_steps = '{}' " \
                                                            "WHERE telegram_id = '{}'".format(user.price_steps,
                                                                                              user.telegram_id)
-                                                cursor.execute(sqlquery)
-                                                db.commit()
+                                                execute_query(sqlquery)
                                                 # Confirm to user
                                                 message = "The price stepping is set to {} now.".format(
                                                     str(splitted[1]))
@@ -368,8 +383,7 @@ async def chat_monitor():
                                             sqlquery = "UPDATE users SET price_steps = '{}' " \
                                                        "WHERE telegram_id = '{}'".format(user.price_steps,
                                                                                          user.telegram_id)
-                                            cursor.execute(sqlquery)
-                                            db.commit()
+                                            execute_query(sqlquery)
                                             # Confirm to user
                                             message = "The price stepping is set to {} now.".format(str(splitted[0]))
                                             await send_message(telegram_id, message)
@@ -460,8 +474,7 @@ async def announcer():
                                 sqlquery = "UPDATE users SET announced_price = '{}', price_level = '{}' " \
                                            "WHERE telegram_id = '{}'".format(user.announced_price, user.price_level,
                                                                              user.telegram_id)
-                                cursor.execute(sqlquery)
-                                db.commit()
+                                execute_query(sqlquery)
 
                     # Make history
                     user.history.append(new_price_level)
@@ -512,8 +525,7 @@ async def position_tracker():
                             # Update database
                             sqlquery = "UPDATE users SET last_position_size = '{}' " \
                                        "WHERE telegram_id = '{}'".format(user.last_position_size, user.telegram_id)
-                            cursor.execute(sqlquery)
-                            db.commit()
+                            execute_query(sqlquery)
 
                             message = "Position closed! Daily PNL: {}".format(round(open_position["realised_pnl"], 4))
                             await send_message(user.telegram_id, message)
@@ -538,8 +550,7 @@ async def position_tracker():
                             # Update database
                             sqlquery = "UPDATE users SET last_position_size = '{}' " \
                                        "WHERE telegram_id = '{}'".format(user.last_position_size, user.telegram_id)
-                            cursor.execute(sqlquery)
-                            db.commit()
+                            execute_query(sqlquery)
 
             await asyncio.sleep(60)
 
