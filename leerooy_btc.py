@@ -185,6 +185,8 @@ async def get_latest_bitcoin_price(source):
                             'https://www.bitmex.com/api/v1/trade?symbol=XBT&count=1&reverse=true') as response:
                         response_json = await response.json()
                         price_bitmex = int(response_json[0]["price"])
+                        if price_bitmex < 1000:
+                            price_bitmex = None
                         logger.debug(("Bitmex Price:", price_bitmex))
                         await asyncio.sleep(10)
             except Exception as error:
@@ -201,6 +203,8 @@ async def get_latest_bitcoin_price(source):
                             'https://www.deribit.com/api/v2/public/ticker?instrument_name=BTC-PERPETUAL') as response:
                         response_json = await response.json()
                         price_deribit = int(response_json["result"]["last_price"])
+                        if price_deribit < 1000:
+                            price_deribit = None
                         logger.debug(("Deribit Price:", price_deribit))
                         await asyncio.sleep(3)
             except Exception as error:
@@ -216,6 +220,8 @@ async def get_latest_bitcoin_price(source):
                     async with session.get('https://api.bybit.com/v2/public/tickers') as response:
                         response_json = await response.json()
                         price_bybit = int(float((response_json["result"][0]["last_price"])))
+                        if price_bybit < 1000:
+                            price_bybit = None
                         logger.debug(("Bybit Price:", price_bybit))
                         await asyncio.sleep(3)
             except Exception as error:
@@ -231,6 +237,8 @@ async def get_latest_bitcoin_price(source):
                     async with session.get('https://www.bitstamp.net/api/v2/ticker/BTCUSD/') as response:
                         response_json = await response.json()
                         price_bitstamp = int(float((response_json["last"])))
+                        if price_bitstamp < 1000:
+                            price_bitstamp = None
                         logger.debug(("Bitstamp Price:", price_bitstamp))
                         await asyncio.sleep(3)
             except Exception as error:
@@ -246,6 +254,8 @@ async def get_latest_bitcoin_price(source):
                     async with session.get('https://api.pro.coinbase.com/products/BTC-USD/ticker') as response:
                         response_json = await response.json()
                         price_coinbase = int(float((response_json["price"])))
+                        if price_coinbase < 1000:
+                            price_coinbase = None
                         logger.debug(("Coinbase Price:", price_coinbase))
                         await asyncio.sleep(3)
             except Exception as error:
@@ -261,6 +271,8 @@ async def get_latest_bitcoin_price(source):
                     async with session.get('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT') as response:
                         response_json = await response.json()
                         price_binance = int(float((response_json["price"])))
+                        if price_binance < 1000:
+                            price_binance = None
                         logger.debug(("Binance Price:", price_binance))
                         await asyncio.sleep(3)
             except Exception as error:
@@ -574,7 +586,7 @@ try:
     asyncio.ensure_future(price_index_calc())
     asyncio.ensure_future(chat_monitor())
     asyncio.ensure_future(announcer())
-    asyncio.ensure_future(position_tracker())
+    # asyncio.ensure_future(position_tracker())
 
     loop.run_forever()
 
