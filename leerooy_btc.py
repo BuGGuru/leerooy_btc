@@ -219,7 +219,7 @@ async def get_latest_bitcoin_price(source):
                         logger.debug(("Bybit Price:", price_bybit))
                         await asyncio.sleep(3)
             except Exception as error:
-                price_deribit = None
+                price_bybit = None
                 logger.debug("Bybit went shit!")
                 logger.debug(error)
                 await asyncio.sleep(10)
@@ -234,7 +234,7 @@ async def get_latest_bitcoin_price(source):
                         logger.debug(("Bitstamp Price:", price_bitstamp))
                         await asyncio.sleep(3)
             except Exception as error:
-                price_deribit = None
+                price_bitstamp = None
                 logger.debug("Bitstamp went shit!")
                 logger.debug(error)
                 await asyncio.sleep(10)
@@ -249,7 +249,7 @@ async def get_latest_bitcoin_price(source):
                         logger.debug(("Coinbase Price:", price_coinbase))
                         await asyncio.sleep(3)
             except Exception as error:
-                price_deribit = None
+                price_coinbase = None
                 logger.debug("Coinbase went shit!")
                 logger.debug(error)
                 await asyncio.sleep(10)
@@ -264,7 +264,7 @@ async def get_latest_bitcoin_price(source):
                         logger.debug(("Binance Price:", price_binance))
                         await asyncio.sleep(3)
             except Exception as error:
-                price_deribit = None
+                price_binance = None
                 logger.debug("Binance went shit!")
                 logger.debug(error)
                 await asyncio.sleep(10)
