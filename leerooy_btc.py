@@ -219,7 +219,9 @@ async def get_latest_bitcoin_price(source):
                 async with aiohttp.ClientSession() as session:
                     async with session.get('https://api.bybit.com/v2/public/tickers') as response:
                         response_json = await response.json()
-                        price_bybit = int(float((response_json["result"][0]["last_price"])))
+                        for count, value in enumerate(response_json):
+                            if response_json["result"][count]["symbol"] == "BTCUSD":
+                                price_bybit = int(float((response_json["result"][count]["last_price"])))
                         if price_bybit < 1000:
                             price_bybit = None
                         logger.debug(("Bybit Price:", price_bybit))
@@ -297,11 +299,18 @@ async def price_index_calc():
                                           price_coinbase,
                                           price_binance])
 
+            logger.info(("1", price_bitmex))
+            logger.info(("2", price_deribit))
+            logger.info(("3", price_bybit))
+            logger.info(("4", price_bitstamp))
+            logger.info(("5", price_coinbase))
+            logger.info(("6", price_binance))
+
             price_index = int(price_index_np[numpy.nonzero(price_index_np)].mean())
 
             if last_index != price_index:
                 last_index = price_index
-                logger.debug(("Price Index:", price_index))
+                logger.info(("Price Index:", price_index))
 
         except Exception as error:
             logger.info("Error: Index could not be build!")
